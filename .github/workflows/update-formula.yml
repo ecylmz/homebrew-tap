@@ -1,0 +1,76 @@
+name: Update Formula
+run-name: Update ${{ inputs.formula }} for ${{ inputs.tag }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      formula:
+        description: "Formula name, e.g. xvault"
+        required: true
+        type: string
+      tag:
+        description: "Release tag, e.g. v0.1.0"
+        required: true
+        type: string
+      repository:
+        description: "Source repository, e.g. ecylmz/xvault"
+        required: true
+        type: string
+      artifact_template:
+        description: "Asset template, e.g. {formula}-{target}.tar.gz"
+        required: false
+        type: string
+      target_aliases:
+        description: "Comma-separated canonical=artifact-target aliases"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  update-formula:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Update formula
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          args=(
+            --formula "${{ inputs.formula }}"
+            --tag "${{ inputs.tag }}"
+            --repository "${{ inputs.repository }}"
+          )
+
+          if [ -n "${{ inputs.artifact_template }}" ]; then
+            args+=(--artifact-template "${{ inputs.artifact_template }}")
+          fi
+
+          if [ -n "${{ inputs.target_aliases }}" ]; then
+            args+=(--target-aliases "${{ inputs.target_aliases }}")
+          fi
+
+          python3 .github/scripts/update_formula.py "${args[@]}"
+          python3 -m unittest discover tests
+          ruby -c "Formula/${{ inputs.formula }}.rb"
+
+      - name: Commit and push
+        run: |
+          FORMULA="${{ inputs.formula }}"
+          TAG="${{ inputs.tag }}"
+
+          git add "Formula/${FORMULA}.rb"
+          if git diff --cached --quiet -- "Formula/${FORMULA}.rb"; then
+            echo "Formula/${FORMULA}.rb already up to date"
+            exit 0
+          fi
+
+          git commit -m "${FORMULA}: update formula for ${TAG}"
+          git push

@@ -1,26 +1,26 @@
 class Xvault < Formula
   desc "Local, read-only X/Twitter archive CLI"
   homepage "https://github.com/ecylmz/xvault"
-  version "0.1.1"
+  version "0.1.2"
   license "MIT"
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/ecylmz/xvault/releases/download/v0.1.1/xvault-darwin-arm64.tar.gz"
-      sha256 "554d5a93dd29de00fdd56b69b7d4170d400a8e96e55a626aea42cd34d684216a"
+      url "https://github.com/ecylmz/xvault/releases/download/v0.1.2/xvault-darwin-arm64.tar.gz"
+      sha256 "f2831e9a8b3da1aa39d82854f164135610ac02752bf7e9be6ca8abc143f77202"
     else
-      url "https://github.com/ecylmz/xvault/releases/download/v0.1.1/xvault-darwin-amd64.tar.gz"
-      sha256 "9dc14bbff97d6a7e1676c362ea3f2fb79acfbf69519f3728a7c9ff91193f53e5"
+      url "https://github.com/ecylmz/xvault/releases/download/v0.1.2/xvault-darwin-amd64.tar.gz"
+      sha256 "34f054cd410483e3345aa7dbb8c05aeb486a8ad6cf99dfb8e5ae0240485d7062"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
-      url "https://github.com/ecylmz/xvault/releases/download/v0.1.1/xvault-linux-arm64.tar.gz"
-      sha256 "199770f0053705a9270158af3478626b8448df7b427846e72c712972a548123b"
+      url "https://github.com/ecylmz/xvault/releases/download/v0.1.2/xvault-linux-arm64.tar.gz"
+      sha256 "f6c46f7eda89d3d4f5ed0db1a27ee78e536f31fb26f97e99053d18d4aae58af5"
     else
-      url "https://github.com/ecylmz/xvault/releases/download/v0.1.1/xvault-linux-amd64.tar.gz"
-      sha256 "7671f5462cc50afc97445ded174eb2220c3cf5ef8e52c8ebcdb9ee001412ee25"
+      url "https://github.com/ecylmz/xvault/releases/download/v0.1.2/xvault-linux-amd64.tar.gz"
+      sha256 "60f77e029a920de136404e7ea2a4d1d37bdc63135cc8446c71d3430d31d5eeb5"
     end
   end
 

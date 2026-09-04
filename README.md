@@ -13,12 +13,14 @@ brew tap ecylmz/tap
 ```bash
 brew install ecylmz/tap/xvault
 brew install ecylmz/tap/apple-notes-md
+brew install ecylmz/tap/cx
 ```
 
 ## Packages
 
 - `xvault` - Local, read-only X/Twitter archive CLI.
 - `apple-notes-md` - Local, read-only Apple Notes to Markdown exporter.
+- `cx` - Fast multi-account switcher and quota dashboard for OpenAI Codex CLI.
 
 ## Updating Formulae
 
@@ -42,5 +44,6 @@ brew upgrade
 
 brew uninstall xvault
 brew uninstall apple-notes-md
+brew uninstall cx
 ```
 

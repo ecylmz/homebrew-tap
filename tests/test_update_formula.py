@@ -60,6 +60,55 @@ end
         self.assertIn("b" * 64, updated)
         self.assertNotIn("a" * 64, updated)
 
+    def test_updates_tag_archive_url_and_sha(self) -> None:
+        formula = '''class Example < Formula
+  url "https://github.com/acme/example/archive/refs/tags/v0.1.0.tar.gz"
+  version "0.1.0"
+  sha256 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+end
+'''
+        with tempfile.TemporaryDirectory() as tmp:
+            path = pathlib.Path(tmp) / "example.rb"
+            path.write_text(formula)
+            with mock.patch.object(update_formula, "sha256", return_value="b" * 64):
+                update_formula.update_formula(
+                    path,
+                    "example",
+                    "acme/example",
+                    "v0.1.1",
+                    "{formula}-{target}.tar.gz",
+                    {},
+                )
+
+            updated = path.read_text()
+
+        self.assertIn('version "0.1.1"', updated)
+        self.assertIn("archive/refs/tags/v0.1.1.tar.gz", updated)
+        self.assertIn("b" * 64, updated)
+        self.assertNotIn("a" * 64, updated)
+
+    def test_rejects_unsupported_formula_layout(self) -> None:
+        formula = '''class Example < Formula
+  url "https://example.com/example-v0.1.0.tar.gz"
+  version "0.1.0"
+  sha256 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+end
+'''
+        with tempfile.TemporaryDirectory() as tmp:
+            path = pathlib.Path(tmp) / "example.rb"
+            path.write_text(formula)
+            with self.assertRaisesRegex(SystemExit, "no supported url/sha256 pairs"):
+                update_formula.update_formula(
+                    path,
+                    "example",
+                    "acme/example",
+                    "v0.1.1",
+                    "{formula}-{target}.tar.gz",
+                    {},
+                )
+
+            self.assertEqual(path.read_text(), formula)
+
 
 if __name__ == "__main__":
     unittest.main()

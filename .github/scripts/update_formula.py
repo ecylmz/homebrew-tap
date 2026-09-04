@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Update this tap's multi-architecture Homebrew formulae from GitHub releases."""
+"""Update this tap's Homebrew formulae from GitHub tags."""
 
 from __future__ import annotations
 
@@ -63,7 +63,9 @@ def release_url(repository: str, tag: str, artifact: str) -> str:
 
 def update_pair(text: str, old_url: str, new_url: str, digest: str) -> str:
     pattern = (
-        rf'(?P<prefix>url "{re.escape(old_url)}"\n\s+sha256 ")'
+        rf'(?P<prefix>url "{re.escape(old_url)}"\n'
+        r'(?:[ \t]+version "[^"]+"\n)?'
+        r'[ \t]+sha256 ")'
         r'[0-9a-f]{64}'
         r'(?P<suffix>")'
     )
@@ -80,6 +82,13 @@ def update_formula(path: pathlib.Path, formula: str, repository: str, tag: str, 
         raise SystemExit(f"{path} has no version")
     old_tag = f"v{old_version.group(1)}"
 
+    updated_pairs = 0
+    old_archive_url = f"https://github.com/{repository}/archive/refs/tags/{old_tag}.tar.gz"
+    if old_archive_url in text:
+        new_archive_url = f"https://github.com/{repository}/archive/refs/tags/{tag}.tar.gz"
+        text = update_pair(text, old_archive_url, new_archive_url, sha256(new_archive_url))
+        updated_pairs += 1
+
     for target in TARGETS:
         old_artifact = artifact_name(template, formula, old_tag, target, aliases)
         new_artifact = artifact_name(template, formula, tag, target, aliases)
@@ -88,6 +97,10 @@ def update_formula(path: pathlib.Path, formula: str, repository: str, tag: str, 
         if old_url not in text:
             continue
         text = update_pair(text, old_url, new_url, sha256(new_url))
+        updated_pairs += 1
+
+    if updated_pairs == 0:
+        raise SystemExit(f"{path} has no supported url/sha256 pairs")
 
     text, count = re.subn(r'^\s*version "[^"]+"', f'  version "{tag.removeprefix("v")}"', text, count=1, flags=re.MULTILINE)
     if count != 1:

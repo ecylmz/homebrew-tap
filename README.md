@@ -32,9 +32,9 @@ Run the `Update Formula` workflow with:
 - `artifact_template`: optional asset template, for example `{formula}-{target}.tar.gz`
 - `target_aliases`: optional comma-separated target aliases, for example `darwin_amd64=darwin-amd64`
 
-The workflow downloads the release artifacts, recalculates checksums, updates
-`Formula/<formula>.rb`, runs the tap tests, and commits the formula change when
-needed.
+The workflow downloads the release assets or tag archive, recalculates
+checksums, updates `Formula/<formula>.rb`, runs the tap tests, and commits the
+formula change when needed.
 
 ## Update / Uninstall
 

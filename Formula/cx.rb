@@ -1,9 +1,9 @@
 class Cx < Formula
   desc "Fast multi-account switcher and quota dashboard for OpenAI Codex CLI"
   homepage "https://github.com/ecylmz/cx"
-  url "https://github.com/ecylmz/cx/archive/refs/tags/v0.8.1.tar.gz"
-  version "0.8.1"
-  sha256 "4799b74459f803d67fc59fd1d007bee1161f655b79c61dd2f79582868feaf7c0"
+  url "https://github.com/ecylmz/cx/archive/refs/tags/v0.8.2.tar.gz"
+  version "0.8.2"
+  sha256 "478a62f2ddb1bd4b45fa6bf20dde2be8b353fcc68a3c5556a3e325a67356ba09"
   license "MIT"
 
   depends_on "go" => :build
